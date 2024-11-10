@@ -7,7 +7,7 @@ import json
 import os
 
 class CommandsTab:
-    def __init__(self, notebook,  command_manager):
+    def __init__(self, notebook,  command_manager, localization):
         self.notebook = notebook
         self.start_commands_dict = {
             "Give all materials": "/giveall materials x9999",
@@ -28,6 +28,7 @@ class CommandsTab:
             }
         self.command_manager = command_manager
         self.custom_commands_file = 'custom_commands.json'
+        self.localization = localization
 
         self.frame = ttk.Frame(notebook)
         self.init_tab()
@@ -48,10 +49,10 @@ class CommandsTab:
         self.sub_notebook.add(tab_frame, text='Base Commands')
 
         # Create frames for Start Commands and Base Commands
-        start_commands_frame = ttk.LabelFrame(tab_frame, text="Start Commands")
+        start_commands_frame = ttk.LabelFrame(tab_frame, text=self.localization["Start_Commands"])
         start_commands_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        base_commands_frame = ttk.LabelFrame(tab_frame, text="Base Commands")
+        base_commands_frame = ttk.LabelFrame(tab_frame, text=self.localization["Base_Commands"])
         base_commands_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # Display buttons for Start Commands
@@ -69,7 +70,7 @@ class CommandsTab:
         self.sub_notebook.add(tab_frame, text='Custom Commands')
 
         # Frame for command buttons
-        commands_frame = ttk.LabelFrame(tab_frame, text="Custom Commands")
+        commands_frame = ttk.LabelFrame(tab_frame, text=self.localization["Custom_Commands"])
         commands_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # Load custom commands
@@ -88,20 +89,20 @@ class CommandsTab:
         bottom_frame = tk.Frame(tab_frame)
         bottom_frame.pack(fill=tk.X, padx=10, pady=5)
 
-        name_label = tk.Label(bottom_frame, text="Name:")
+        name_label = tk.Label(bottom_frame, text=self.localization["Name"])
         name_label.pack(side=tk.LEFT)
 
         self.name_var = tk.StringVar()
         name_entry = tk.Entry(bottom_frame, textvariable=self.name_var)
         name_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
 
-        save_button = tk.Button(bottom_frame, text="Save", command=self.save_custom_command)
+        save_button = tk.Button(bottom_frame, text=self.localization["Save"], command=self.save_custom_command)
         save_button.pack(side=tk.LEFT, padx=5)
 
-        load_button = tk.Button(bottom_frame, text="Load", command=self.load_custom_command)
+        load_button = tk.Button(bottom_frame, text=self.localization["Load"], command=self.load_custom_command)
         load_button.pack(side=tk.LEFT, padx=5)
 
-        delete_button = tk.Button(bottom_frame, text="Delete", command=self.delete_custom_command)
+        delete_button = tk.Button(bottom_frame, text=self.localization["Delete"], command=self.delete_custom_command)
         delete_button.pack(side=tk.LEFT, padx=5)
 
     def load_custom_commands(self):
@@ -111,7 +112,7 @@ class CommandsTab:
                     custom_commands = json.load(f)
                     return custom_commands
             except Exception as e:
-                messagebox.showerror("Error", f"Failed to load custom commands: {e}")
+                messagebox.showerror(self.localization["Error"], f"Failed to load custom commands: {e}")
                 return {}
         else:
             return {}
@@ -121,7 +122,7 @@ class CommandsTab:
             with open(self.custom_commands_file, 'w', encoding='utf-8') as f:
                 json.dump(self.custom_commands_dict, f, ensure_ascii=False, indent=4)
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to save custom commands: {e}")
+            messagebox.showerror(self.localization["Error"], f"Failed to save custom commands: {e}")
 
     def update_custom_commands_listbox(self):
         self.command_listbox.delete(0, tk.END)
@@ -144,11 +145,11 @@ class CommandsTab:
     def save_custom_command(self):
         name = self.name_var.get().strip()
         if not name:
-            messagebox.showwarning("Warning", "Please enter a name for the custom command.")
+            messagebox.showwarning(self.localization["Warning"], "Please enter a name for the custom command.")
             return
         command = self.command_manager.give_command.get()
         if not command:
-            messagebox.showwarning("Warning", "There is no command to save.")
+            messagebox.showwarning(self.localization["Warning"], "There is no command to save.")
             return
 
         # Save or overwrite the custom command
@@ -160,19 +161,19 @@ class CommandsTab:
     def load_custom_command(self):
         name = self.name_var.get().strip()
         if not name:
-            messagebox.showwarning("Warning", "Please enter the name of the custom command to load.")
+            messagebox.showwarning(self.localization["Warning"], "Please enter the name of the custom command to load.")
             return
         command = self.custom_commands_dict.get(name)
         if command:
             self.command_manager.update_command(command)
             messagebox.showinfo("Info", f"Custom command '{name}' loaded.")
         else:
-            messagebox.showwarning("Warning", f"Custom command '{name}' not found.")
+            messagebox.showwarning(self.localization["Warning"], f"Custom command '{name}' not found.")
 
     def delete_custom_command(self):
         name = self.name_var.get().strip()
         if not name:
-            messagebox.showwarning("Warning", "Please enter the name of the custom command to delete.")
+            messagebox.showwarning(self.localization["Warning"], "Please enter the name of the custom command to delete.")
             return
         if name in self.custom_commands_dict:
             del self.custom_commands_dict[name]
@@ -182,4 +183,4 @@ class CommandsTab:
             self.name_var.set('')
             messagebox.showinfo("Info", f"Custom command '{name}' deleted.")
         else:
-            messagebox.showwarning("Warning", f"Custom command '{name}' not found.")
+            messagebox.showwarning(self.localization["Warning"], f"Custom command '{name}' not found.")
