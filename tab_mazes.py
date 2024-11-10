@@ -5,10 +5,11 @@ from tkinter import ttk
 from tkinter import VERTICAL, RIGHT, LEFT, Y, StringVar
 
 class MazesTab:
-    def __init__(self, notebook, mazes_list, command_manager):
+    def __init__(self, notebook, mazes_list, command_manager, localization):
         self.notebook = notebook
         self.mazes_list = mazes_list
         self.command_manager = command_manager
+        self.localization = localization
 
         self.frame = ttk.Frame(notebook)
         self.init_tab()
@@ -22,7 +23,7 @@ class MazesTab:
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Search functionality
-        search_label = tk.Label(main_frame, text="Search:")
+        search_label = tk.Label(main_frame, text=self.localization["Search"])
         search_label.pack()
 
         search_entry = tk.Entry(main_frame, textvariable=search_var)
