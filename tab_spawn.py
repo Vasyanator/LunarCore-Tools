@@ -6,13 +6,14 @@ from tkinter import VERTICAL, RIGHT, LEFT, Y, StringVar, IntVar
 from tkinter import messagebox
 
 class SpawnTab:
-    def __init__(self, notebook, props_list, npc_monsters_list, battle_stages, battle_monsters_list, command_manager):
+    def __init__(self, notebook, props_list, npc_monsters_list, battle_stages, battle_monsters_list, command_manager, localization):
         self.notebook = notebook
         self.props_list = props_list
         self.npc_monsters_list = npc_monsters_list
         self.battle_stages = battle_stages
         self.battle_monsters_list = battle_monsters_list
         self.command_manager = command_manager
+        self.localization = localization
 
         self.frame = ttk.Frame(notebook)
         self.init_tab()
@@ -30,7 +31,7 @@ class SpawnTab:
 
     def create_props_tab(self):
         tab_frame = ttk.Frame(self.sub_notebook)
-        self.sub_notebook.add(tab_frame, text='Props')
+        self.sub_notebook.add(tab_frame, text=self.localization['Props'])
 
         selected_prop_id = None
         search_var = StringVar()
@@ -40,7 +41,7 @@ class SpawnTab:
         main_frame.pack(fill=tk.BOTH, expand=True)
 
         # Search functionality
-        search_label = tk.Label(main_frame, text="Search:")
+        search_label = tk.Label(main_frame, text=self.localization["Search"])
         search_label.pack()
 
         search_entry = tk.Entry(main_frame, textvariable=search_var)
@@ -110,7 +111,7 @@ class SpawnTab:
 
     def create_monsters_tab(self):
         tab_frame = ttk.Frame(self.sub_notebook)
-        self.sub_notebook.add(tab_frame, text='Monsters')
+        self.sub_notebook.add(tab_frame, text=self.localization['Monsters'])
 
         # Variables to hold selections
         selected_npc_monster_id = None
@@ -126,7 +127,7 @@ class SpawnTab:
         radius_enabled_var = IntVar(value=0)
 
         # Toggle between 'Custom monsters' and 'Stages'
-        toggle_var = StringVar(value='Custom monsters')
+        toggle_var = StringVar(value=self.localization['Custom_monsters'])
 
         # Define update_command function before it's used
         def update_command():
@@ -162,13 +163,13 @@ class SpawnTab:
                     return
 
             # Add either 's{stage id}' or battle monster ids
-            if toggle_var.get() == 'Stages':
+            if toggle_var.get() == self.localization['Stages']:
                 if selected_stage_id:
                     command += f" s{selected_stage_id}"
                 else:
                     self.command_manager.update_command('')
                     return
-            elif toggle_var.get() == 'Custom monsters':
+            elif toggle_var.get() == self.localization['Custom_monsters']:
                 if selected_battle_monster_ids:
                     for battle_monster_id in selected_battle_monster_ids:
                         command += f" {battle_monster_id}"
@@ -198,7 +199,7 @@ class SpawnTab:
         npc_monster_frame.pack(fill=tk.BOTH, expand=True)
 
         npc_search_var = StringVar()
-        npc_search_label = tk.Label(npc_monster_frame, text="Search NPC Monsters:")
+        npc_search_label = tk.Label(npc_monster_frame, text=self.localization["Search_NPC_Monsters"])
         npc_search_label.pack()
         npc_search_entry = tk.Entry(npc_monster_frame, textvariable=npc_search_var)
         npc_search_entry.pack()
@@ -236,21 +237,21 @@ class SpawnTab:
         params_frame.pack()
 
         # Level parameter
-        level_checkbox = tk.Checkbutton(params_frame, text="Level:", variable=level_enabled_var, command=update_command)
+        level_checkbox = tk.Checkbutton(params_frame, text=self.localization["Level"], variable=level_enabled_var, command=update_command)
         level_checkbox.grid(row=0, column=0, sticky='w')
         level_entry = tk.Entry(params_frame, textvariable=level_var, width=5)
         level_entry.grid(row=0, column=1)
         level_var.trace('w', lambda *args: update_command())
 
         # Amount parameter
-        amount_checkbox = tk.Checkbutton(params_frame, text="Number:", variable=amount_enabled_var, command=update_command)
+        amount_checkbox = tk.Checkbutton(params_frame, text=self.localization["Number"], variable=amount_enabled_var, command=update_command)
         amount_checkbox.grid(row=1, column=0, sticky='w')
         amount_entry = tk.Entry(params_frame, textvariable=amount_var, width=5)
         amount_entry.grid(row=1, column=1)
         amount_var.trace('w', lambda *args: update_command())
 
         # Radius parameter
-        radius_checkbox = tk.Checkbutton(params_frame, text="Radius:", variable=radius_enabled_var, command=update_command)
+        radius_checkbox = tk.Checkbutton(params_frame, text=self.localization["Radius"], variable=radius_enabled_var, command=update_command)
         radius_checkbox.grid(row=2, column=0, sticky='w')
         radius_entry = tk.Entry(params_frame, textvariable=radius_var, width=5)
         radius_entry.grid(row=2, column=1)
@@ -260,10 +261,10 @@ class SpawnTab:
         toggle_frame = tk.Frame(right_frame)
         toggle_frame.pack()
 
-        toggle_label = tk.Label(toggle_frame, text="Select:")
+        toggle_label = tk.Label(toggle_frame, text=self.localization["Select"])
         toggle_label.pack(side=LEFT)
 
-        toggle_optionmenu = ttk.OptionMenu(toggle_frame, toggle_var, 'Custom monsters', 'Custom monsters', 'Stages', command=lambda _: update_battle_ui())
+        toggle_optionmenu = ttk.OptionMenu(toggle_frame, toggle_var, self.localization['Custom_monsters'], self.localization['Custom_monsters'], self.localization['Stages'], command=lambda _: update_battle_ui())
         toggle_optionmenu.pack(side=LEFT)
 
         # Frame to hold dynamic battle UI
@@ -276,7 +277,7 @@ class SpawnTab:
             for widget in battle_frame.winfo_children():
                 widget.destroy()
 
-            if toggle_var.get() == 'Custom monsters':
+            if toggle_var.get() == self.localization['Custom_monsters']:
                 # Custom Monsters UI
                 setup_custom_monsters_ui()
             else:
@@ -289,7 +290,7 @@ class SpawnTab:
         def setup_custom_monsters_ui():
             # Search functionality for Battle Monsters
             battle_search_var = StringVar()
-            battle_search_label = tk.Label(battle_frame, text="Search Battle Monsters:")
+            battle_search_label = tk.Label(battle_frame, text=self.localization["Search_Battle_Monsters"])
             battle_search_label.pack()
             battle_search_entry = tk.Entry(battle_frame, textvariable=battle_search_var)
             battle_search_entry.pack()
@@ -306,11 +307,11 @@ class SpawnTab:
             battle_monster_listbox.pack(side=LEFT, fill=tk.BOTH, expand=True)
 
             # 'Add' button
-            add_button = tk.Button(battle_frame, text="Add", command=lambda: add_battle_monster(battle_monster_listbox))
+            add_button = tk.Button(battle_frame, text=self.localization["Add"], command=lambda: add_battle_monster(battle_monster_listbox))
             add_button.pack()
 
             # Selected Battle Monsters list
-            selected_battle_label = tk.Label(battle_frame, text="Selected Battle Monsters:")
+            selected_battle_label = tk.Label(battle_frame, text=self.localization["Selected_Battle_Monsters"])
             selected_battle_label.pack()
 
             selected_battle_frame = tk.Frame(battle_frame)
@@ -326,9 +327,9 @@ class SpawnTab:
             buttons_frame = tk.Frame(battle_frame)
             buttons_frame.pack()
 
-            remove_button = tk.Button(buttons_frame, text="Remove", command=lambda: remove_selected_battle_monster(selected_battle_listbox))
+            remove_button = tk.Button(buttons_frame, text=self.localization["Remove"], command=lambda: remove_selected_battle_monster(selected_battle_listbox))
             remove_button.pack(side=LEFT)
-            clear_button = tk.Button(buttons_frame, text="Clear", command=lambda: clear_selected_battle_monsters(selected_battle_listbox))
+            clear_button = tk.Button(buttons_frame, text=self.localization["Clear"], command=lambda: clear_selected_battle_monsters(selected_battle_listbox))
             clear_button.pack(side=LEFT)
 
             def update_battle_monster_list():
@@ -381,7 +382,7 @@ class SpawnTab:
             level_frame = tk.Frame(battle_frame)
             level_frame.pack()
 
-            level_label = tk.Label(level_frame, text="For world level:")
+            level_label = tk.Label(level_frame, text=self.localization["For_world_level"])
             level_label.pack(side=LEFT)
 
             level_var_stage = StringVar(value='6')
@@ -394,7 +395,7 @@ class SpawnTab:
 
             # Search functionality for Battle Stages
             battle_search_var = StringVar()
-            battle_search_label = tk.Label(battle_frame, text="Search Battle Stages:")
+            battle_search_label = tk.Label(battle_frame, text=self.localization["Search_Battle_Stages"])
             battle_search_label.pack()
             battle_search_entry = tk.Entry(battle_frame, textvariable=battle_search_var)
             battle_search_entry.pack()
@@ -425,7 +426,7 @@ class SpawnTab:
                         battle_stage_listbox.insert(tk.END, display_text)
 
             # 'Search' button
-            search_button = tk.Button(battle_frame, text="Search", command=update_battle_stage_list)
+            search_button = tk.Button(battle_frame, text=self.localization["Search"], command=update_battle_stage_list)
             search_button.pack()
 
             # Battle Stages list
