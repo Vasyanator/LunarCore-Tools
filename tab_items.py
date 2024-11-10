@@ -5,7 +5,7 @@ from tkinter import ttk
 from tkinter import messagebox, VERTICAL, RIGHT, LEFT, Y, END
 
 class ItemsTab:
-    def __init__(self, notebook, base_materials, lightcones, materials, other_items, unknown_items, command_manager):
+    def __init__(self, notebook, base_materials, lightcones, materials, other_items, unknown_items, command_manager, localization):
         self.notebook = notebook
         self.base_materials = base_materials
         self.lightcones = lightcones
@@ -13,6 +13,7 @@ class ItemsTab:
         self.other_items = other_items
         self.unknown_items = unknown_items
         self.command_manager = command_manager
+        self.localization = localization
 
         self.frame = ttk.Frame(notebook)
         self.init_tab()
@@ -23,11 +24,11 @@ class ItemsTab:
         self.sub_notebook.pack(fill=tk.BOTH, expand=True)
 
         # Create tabs for each item type, passing the respective lists
-        self.create_item_tab('Base Materials', self.base_materials)
-        self.create_item_tab('Lightcones', self.lightcones, additional_options={'level': (1, 80), 'rank': (1, 5)})
-        self.create_item_tab('Materials', self.materials)
-        self.create_item_tab('Other', self.other_items)
-        self.create_item_tab('Unknown', self.unknown_items)
+        self.create_item_tab(self.localization['Base Materials'], self.base_materials)
+        self.create_item_tab(self.localization['Lightcones'], self.lightcones, additional_options={'level': (1, 80), 'rank': (1, 5)})
+        self.create_item_tab(self.localization['Materials'], self.materials)
+        self.create_item_tab(self.localization['Other'], self.other_items)
+        self.create_item_tab(self.localization['Unknown'], self.unknown_items)
 
     def create_item_tab(self, tab_name, item_list, additional_options=None):
         tab_frame = ttk.Frame(self.sub_notebook)
@@ -55,7 +56,7 @@ class ItemsTab:
         right_frame.pack(side=tk.RIGHT, fill=tk.Y)
 
         # Search functionality
-        search_label = tk.Label(left_frame, text="Search:")
+        search_label = tk.Label(left_frame, text=self.localization["Search"])
         search_label.pack()
 
         search_entry = tk.Entry(left_frame, textvariable=search_var)
@@ -92,7 +93,7 @@ class ItemsTab:
         item_listbox.bind('<<ListboxSelect>>', on_item_select)
 
         # Quantity selection
-        quantity_label = tk.Label(right_frame, text="Quantity:")
+        quantity_label = tk.Label(right_frame, text=self.localization["Quantity"])
         quantity_label.pack()
 
         quantity_entry = tk.Entry(right_frame, textvariable=quantity_var)
@@ -104,7 +105,7 @@ class ItemsTab:
         # For Lightcones, add level and rank options
         if additional_options:
             # Level selection
-            level_label = tk.Label(right_frame, text=f"Level ({additional_options['level'][0]}-{additional_options['level'][1]}):")
+            level_label = tk.Label(right_frame, text=f"{self.localization['Level']} ({additional_options['level'][0]}-{additional_options['level'][1]}):")
             level_label.pack()
 
             level_spinbox = tk.Spinbox(
@@ -118,7 +119,7 @@ class ItemsTab:
             level_spinbox.pack()
 
             # Rank selection
-            rank_label = tk.Label(right_frame, text=f"Rank ({additional_options['rank'][0]}-{additional_options['rank'][1]}):")
+            rank_label = tk.Label(right_frame, text=f"{self.localization['Rank']} ({additional_options['rank'][0]}-{additional_options['rank'][1]}):")
             rank_label.pack()
 
             rank_spinbox = tk.Spinbox(
