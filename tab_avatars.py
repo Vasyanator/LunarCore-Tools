@@ -5,10 +5,11 @@ from tkinter import ttk
 from tkinter import VERTICAL, RIGHT, LEFT, Y, StringVar, IntVar, messagebox
 
 class AvatarsTab:
-    def __init__(self, notebook, avatars_list, command_manager):
+    def __init__(self, notebook, avatars_list, command_manager, localization):
         self.notebook = notebook
         self.avatars_list = avatars_list
         self.command_manager = command_manager
+        self.localization = localization
 
         self.frame = ttk.Frame(notebook)
         self.init_tab()
@@ -50,16 +51,16 @@ class AvatarsTab:
 
     def create_lineup_section(self, parent_frame):
         # Title
-        lineup_label = tk.Label(parent_frame, text="Lineup", font=("Arial", 12, "bold"))
+        lineup_label = tk.Label(parent_frame, text=self.localization["Lineup"], font=("Arial", 12, "bold"))
         lineup_label.pack(pady=5)
 
         # Warning label
-        warning_label = tk.Label(parent_frame, text="USE AT YOUR OWN RISK", fg="red", font=("Arial", 14, "bold"))
+        warning_label = tk.Label(parent_frame, text=self.localization["USE_AT_YOUR_OWN_RISK"], fg="red", font=("Arial", 14, "bold"))
         warning_label.pack(pady=5)
 
         # Search functionality
         search_var = StringVar()
-        search_label = tk.Label(parent_frame, text="Search:")
+        search_label = tk.Label(parent_frame, text=self.localization["Search"])
         search_label.pack()
         search_entry = tk.Entry(parent_frame, textvariable=search_var)
         search_entry.pack()
@@ -76,7 +77,7 @@ class AvatarsTab:
         avatar_listbox.pack(side=LEFT, fill=tk.BOTH, expand=True)
 
         # Lineup listbox
-        lineup_list_label = tk.Label(parent_frame, text="Lineup List:")
+        lineup_list_label = tk.Label(parent_frame, text=self.localization["Lineup_List"])
         lineup_list_label.pack(pady=5)
         lineup_listbox = tk.Listbox(parent_frame, width=30, height=10, exportselection=False)
         lineup_listbox.pack(fill=tk.BOTH, expand=True)
@@ -84,11 +85,11 @@ class AvatarsTab:
         # Buttons
         buttons_frame = tk.Frame(parent_frame)
         buttons_frame.pack(pady=5)
-        add_button = tk.Button(buttons_frame, text="Add", command=lambda: add_to_lineup())
+        add_button = tk.Button(buttons_frame, text=self.localization["Add"], command=lambda: add_to_lineup())
         add_button.pack(side=LEFT, padx=5)
-        remove_button = tk.Button(buttons_frame, text="Remove", command=lambda: remove_from_lineup())
+        remove_button = tk.Button(buttons_frame, text=self.localization["Remove"], command=lambda: remove_from_lineup())
         remove_button.pack(side=LEFT, padx=5)
-        clear_button = tk.Button(buttons_frame, text="Clear", command=lambda: clear_lineup())
+        clear_button = tk.Button(buttons_frame, text=self.localization["Clear"], command=lambda: clear_lineup())
         clear_button.pack(side=LEFT, padx=5)
 
         # Initialize variables
@@ -135,7 +136,7 @@ class AvatarsTab:
                 #else:
                     #messagebox.showinfo("Info", "Avatar already in lineup.")
             else:
-                messagebox.showwarning("Warning", "No avatar selected.")
+                messagebox.showwarning(self.localization["Warning"], "No avatar selected.")
 
         # Function to remove selected avatar from lineup
         def remove_from_lineup():
@@ -147,7 +148,7 @@ class AvatarsTab:
                 lineup_ids.remove(avatar_id)
                 update_lineup_command()
             else:
-                messagebox.showwarning("Warning", "No avatar selected in lineup.")
+                messagebox.showwarning(self.localization["Warning"], "No avatar selected in lineup.")
 
         # Function to clear the lineup
         def clear_lineup():
@@ -168,11 +169,11 @@ class AvatarsTab:
 
     def create_properties_section(self, parent_frame):
         # Title
-        properties_label = tk.Label(parent_frame, text="Properties", font=("Arial", 12, "bold"))
+        properties_label = tk.Label(parent_frame, text=self.localization["Properties"], font=("Arial", 12, "bold"))
         properties_label.pack(pady=5)
 
         # Target selection
-        target_label = tk.Label(parent_frame, text="Target:")
+        target_label = tk.Label(parent_frame, text=self.localization["Target"])
         target_label.pack()
         target_var = StringVar(value='cur')
         target_options = ['cur', 'all', 'lineup']
@@ -180,7 +181,7 @@ class AvatarsTab:
         target_menu.pack()
 
         # Level
-        level_label = tk.Label(parent_frame, text="Level (1-80):")
+        level_label = tk.Label(parent_frame, text=self.localization["Level_(1_80)"])
         level_label.pack()
         level_var = StringVar(value='1')
         level_entry = tk.Entry(parent_frame, textvariable=level_var)
@@ -188,7 +189,7 @@ class AvatarsTab:
         level_var.trace('w', lambda *args: update_properties_command())
 
         # Ascension
-        ascension_label = tk.Label(parent_frame, text="Ascension (0-6):")
+        ascension_label = tk.Label(parent_frame, text=self.localization["Ascension_(0_6)"])
         ascension_label.pack()
         ascension_var = StringVar(value='0')
         ascension_entry = tk.Entry(parent_frame, textvariable=ascension_var)
@@ -196,7 +197,7 @@ class AvatarsTab:
         ascension_var.trace('w', lambda *args: update_properties_command())
 
         # Eidolon
-        eidolon_label = tk.Label(parent_frame, text="Eidolon (0-6):")
+        eidolon_label = tk.Label(parent_frame, text=self.localization["Eidolon_(0_6)"])
         eidolon_label.pack()
         eidolon_var = StringVar(value='0')
         eidolon_entry = tk.Entry(parent_frame, textvariable=eidolon_var)
@@ -204,7 +205,7 @@ class AvatarsTab:
         eidolon_var.trace('w', lambda *args: update_properties_command())
 
         # Skill Levels
-        skill_label = tk.Label(parent_frame, text="Skill Levels (1-12):")
+        skill_label = tk.Label(parent_frame, text=self.localization["Skill_Levels_(1_12)"])
         skill_label.pack()
         skill_var = StringVar(value='1')
         skill_entry = tk.Entry(parent_frame, textvariable=skill_var)
